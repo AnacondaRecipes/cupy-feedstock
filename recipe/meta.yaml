@@ -12,12 +12,19 @@ source:
 
 build:
   number: 0
-  skip: true  # [cuda_compiler_version in (undefined, "None")]
+  skip: true  # [(not linux64 and not win64) or cuda_compiler_version in (undefined, "None")]
   script:
     # CuPy default detects CUDA from nvcc, but on Conda-Forge's dockers nvcc lives in a different place...
     - export NVCC=$(which nvcc)         # [cuda_compiler_version == '11.0']
     - export CUDA_PATH=/usr/local/cuda  # [cuda_compiler_version == '11.0']
     - echo "nvcc is $NVCC, CUDA path is $CUDA_PATH"
+
+    # -=- taken from prior build.sh -=-
+    - export NCCL_LIB_DIR="${PREFIX}/lib"                        # [linux]
+    - export NCCL_INCLUDE_DIR="${PREFIX}/include"                # [linux]
+    # Add path to find libcuda.so.
+    - export LDFLAGS="-L/usr/local/cuda/lib64/stubs ${LDFLAGS}"  # [linux]
+    # -=- taken from prior build.sh -=-
 
     - {{ PYTHON }} -m pip install . --no-deps -vv
 
