@@ -29,10 +29,18 @@ build:
     - {{ PYTHON }} -m pip install . --no-deps -vv
 
     # copy activate/deactivate scripts
-    - mkdir -p "${PREFIX}/etc/conda/activate.d"
-    - cp "${RECIPE_DIR}/activate.sh" "${PREFIX}/etc/conda/activate.d/cupy_activate.sh"
-    - mkdir -p "${PREFIX}/etc/conda/deactivate.d"
-    - cp "${RECIPE_DIR}/deactivate.sh" "${PREFIX}/etc/conda/deactivate.d/cupy_deactivate.sh"
+    - mkdir -p "${PREFIX}/etc/conda/activate.d"                                                       # [linux]
+    - cp "${RECIPE_DIR}/scripts/activate.sh" "${PREFIX}/etc/conda/activate.d/cupy_activate.sh"        # [linux]
+    - mkdir -p "${PREFIX}/etc/conda/deactivate.d"                                                     # [linux]
+    - cp "${RECIPE_DIR}/scripts/deactivate.sh" "${PREFIX}/etc/conda/deactivate.d/cupy_deactivate.sh"  # [linux]
+
+    - mkdir "${PREFIX}\etc\conda\activate.d"                                                          # [win]
+    - copy "%RECIPE_DIR%\scripts\activate.bat" "%PREFIX%\etc\conda\activate.d\cupy_activate.sh"       # [win]
+    - if errorlevel 1 exit 1                                                                          # [win]
+    - mkdir "%PREFIX%\etc\conda\deactivate.d"                                                         # [win]
+    - copy "%RECIPE_DIR%\scripts\deactivate.bat" "%PREFIX%\etc\conda\deactivate.d\cupy_deactivate.sh" # [win]
+    - if errorlevel 1 exit 1                                                                          # [win]
+
   missing_dso_whitelist:
     - '*/libcuda.*'
 
@@ -49,7 +57,7 @@ requirements:
     - cython >=0.24.0
     - fastrlock >=0.3
     - cudnn
-    - nccl
+    - nccl                    # [linux]
 
   run:
     - python
