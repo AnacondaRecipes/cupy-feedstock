@@ -34,12 +34,12 @@ build:
     - mkdir -p "${PREFIX}/etc/conda/deactivate.d"                                                     # [linux]
     - cp "${RECIPE_DIR}/scripts/deactivate.sh" "${PREFIX}/etc/conda/deactivate.d/cupy_deactivate.sh"  # [linux]
 
-    - mkdir "${PREFIX}\etc\conda\activate.d"                                                          # [win]
-    - copy "%RECIPE_DIR%\scripts\activate.bat" "%PREFIX%\etc\conda\activate.d\cupy_activate.sh"       # [win]
-    - if errorlevel 1 exit 1                                                                          # [win]
-    - mkdir "%PREFIX%\etc\conda\deactivate.d"                                                         # [win]
-    - copy "%RECIPE_DIR%\scripts\deactivate.bat" "%PREFIX%\etc\conda\deactivate.d\cupy_deactivate.sh" # [win]
-    - if errorlevel 1 exit 1                                                                          # [win]
+    - mkdir "$%PREFIX%\etc\conda\activate.d"                                                            # [win]
+    - copy "%RECIPE_DIR%\scripts\activate.bat" "%PREFIX%\etc\conda\activate.d\cupy_activate.bat"        # [win]
+    - if errorlevel 1 exit 1                                                                            # [win]
+    - mkdir "%PREFIX%\etc\conda\deactivate.d"                                                           # [win]
+    - copy "%RECIPE_DIR%\scripts\deactivate.bat" "%PREFIX%\etc\conda\deactivate.d\cupy_deactivate.bat"  # [win]
+    - if errorlevel 1 exit 1                                                                            # [win]
 
   missing_dso_whitelist:
     - '*/libcuda.*'

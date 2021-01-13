@@ -3,4 +3,4 @@
 @if defined CUDA_PATH (
     set "CONDA_CUPY_CUDA_PATH=%CUDA_PATH%"
 )
-@set "CUDA_PATH=%CONDA_PREFIX%"
+@set "CUDA_PATH=%CONDA_PREFIX%\Library"
