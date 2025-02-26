@@ -1,0 +1,6 @@
+# No --error-overlinking to allow cupy-core to ignore run_exports from its deps but have them provided by cupy itself.
+# No tests since CI runners cannot run GPU tests.
+build_parameters:
+  - "--suppress-variables"
+  - "--skip-existing"
+  - "--no-test"
