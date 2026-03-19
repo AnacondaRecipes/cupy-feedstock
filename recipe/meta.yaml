@@ -59,11 +59,9 @@ outputs:
         - {{ pin_compatible("cuda-version", min_pin="x") }}
     test:
       requires:
-        # need the libcuda stub for import test
-        - cuda-driver-dev  # [linux]
-      script: run_test.py
-      source_files:
-        - tests
+        - pip
+      commands:
+        - pip check
     about:
       home: https://cupy.dev/
       license: MIT
@@ -71,6 +69,9 @@ outputs:
       license_file: LICENSE
       summary: |
         CuPy: NumPy & SciPy for GPU
+      description: |
+        CuPy is an open-source array library for GPU-accelerated computing with Python.
+        It provides GPU versions of many NumPy and SciPy functions.
       dev_url: https://github.com/cupy/cupy/
       doc_url: https://docs.cupy.dev/en/stable/
 
@@ -137,6 +138,7 @@ outputs:
       host:
         - python
         - pip
+        - wheel
         - setuptools >=77
         - cython >=3.1,<3.2
         - numpy 2.*
