@@ -59,9 +59,10 @@ outputs:
         - {{ pin_compatible("cuda-version", min_pin="x") }}
     test:
       requires:
-        - pip
-      commands:
-        - pip check
+        - cuda-driver-dev  # [linux]
+      script: run_test.py
+      source_files:
+        - tests
     about:
       home: https://cupy.dev/
       license: MIT
