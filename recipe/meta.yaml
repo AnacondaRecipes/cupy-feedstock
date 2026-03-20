@@ -89,9 +89,9 @@ outputs:
         - export CUDA_PATH=$PREFIX/targets/{{ target_name }}                         # [linux]
         - echo "nvcc is $NVCC, CUDA path is $CUDA_PATH"                              # [linux]
         - echo "CONDA_OVERRIDE_CUDA is $CONDA_OVERRIDE_CUDA"                         # [linux]
-        # Set NVCC to conda env's nvcc with double-backslashes (CuPy's Python build system needs them).
-        # Cannot use `where nvcc` — the for loop iterates ALL results and the system CUDA wins last.
-        - set "dummy=%PREFIX%\Library\bin\nvcc.exe" && call set "NVCC=%%dummy:\=\\%%"  # [win64]
+        # Set NVCC to conda build env's nvcc (compiler('cuda') installs to BUILD_PREFIX, not PREFIX).
+        # Double-backslashes needed because CuPy's Python build system interprets the string.
+        - set "dummy=%BUILD_PREFIX%\Library\bin\nvcc.exe" && call set "NVCC=%%dummy:\=\\%%"  # [win64]
         - set "NVCC=%NVCC% --use-local-env"                                          # [win64]
         - set "CUDA_PATH=%PREFIX%\Library"                                           # [win64]
         - echo "nvcc is %NVCC%, CUDA path is %CUDA_PATH%"                            # [win64]
