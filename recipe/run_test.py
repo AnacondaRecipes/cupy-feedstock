@@ -29,7 +29,8 @@ else:
 
 # dlopen the driver stub so that CuPy can be imported later
 # Note: This would make the actual tests fail on GPU CI!
-if sys.platform.startswith('linux') and '12' in os.environ.get('CONDA_OVERRIDE_CUDA', ''):
+cuda_override = os.environ.get('CONDA_OVERRIDE_CUDA', '')
+if sys.platform.startswith('linux') and (cuda_override.startswith('12') or cuda_override.startswith('13')):
     try:
         stub = f"{os.environ['PREFIX']}/targets/{get_target_name()}/lib/stubs/libcuda.so"
         stub = ctypes.CDLL(stub)
