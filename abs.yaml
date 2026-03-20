@@ -1,9 +1,7 @@
 # No --error-overlinking to allow cupy-core to ignore run_exports from its deps but have them provided by cupy itself.
-# No tests since PBP builds use --no-test (cupy test suite requires full GPU).
 build_parameters:
   - "--suppress-variables"
   - "--skip-existing"
-  - "--no-test"
 
 build_env_vars:
   ANACONDA_ROCKET_ENABLE_PY314: yes
