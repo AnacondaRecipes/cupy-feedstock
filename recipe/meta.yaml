@@ -58,8 +58,6 @@ outputs:
         # see discussions/references in conda-forge/cupy-feedstock#247
         - {{ pin_compatible("cuda-version", min_pin="x") }}
     test:
-      requires:
-        - cuda-driver-dev  # [linux]
       script: run_test.py
       source_files:
         - tests
@@ -98,7 +96,7 @@ outputs:
         - echo "nvcc is %NVCC%, CUDA path is %CUDA_PATH%"                            # [win64]
         - echo "CONDA_OVERRIDE_CUDA is %CONDA_OVERRIDE_CUDA%"                        # [win64]
         - >-
-          {{ PYTHON }} -m pip install . --no-deps -vv
+          {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
         - if errorlevel 1 exit 1  # [win]
         # enable CuPy's preload mechanism
         - mkdir -p "${SP_DIR}/cupy/.data/"                                                                          # [linux]
