@@ -57,6 +57,8 @@ outputs:
         - libcusparse
         # see discussions/references in conda-forge/cupy-feedstock#247
         - {{ pin_compatible("cuda-version", min_pin="x") }}
+        # unbounded: __cuda gates GPU presence; cuda-version handles the version
+        - __cuda
     test:
       script: run_test.py
       source_files:
@@ -167,7 +169,8 @@ outputs:
         - {{ pin_compatible('libcusparse', min_pin='x', max_pin='x') }}
         - scipy >=1.10,<1.17
         - optuna >=2.0
-        - __cuda >={{ cuda_major }}.0
+        # unbounded: __cuda gates GPU presence; cuda-version handles the version
+        - __cuda
         - {{ pin_subpackage('cupy', max_pin='x.x') }}
         - {{ pin_compatible('nccl') }}                           # [linux]
         - {{ pin_compatible('cutensor') }}
