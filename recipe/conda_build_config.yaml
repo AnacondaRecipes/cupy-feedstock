@@ -11,7 +11,7 @@ cxx_compiler:                      # [win]
 # CUDA 12.9+ supports gcc <15, compatible with GCC 14.3.0.
 cuda_compiler_version:
   - 12.9                           # [win or linux]
-  - 13.1                           # [win or linux]
+  - 13.0                           # [win or linux]
 
 zip_keys:                          # [win]
   -                                # [win]
