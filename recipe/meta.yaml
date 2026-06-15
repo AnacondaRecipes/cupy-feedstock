@@ -1,18 +1,14 @@
 {% set name = "cupy" %}
 {% set version = "14.0.1" %}
 {% set sha256 = "4b673ab2d8b2329abe7ae0a7ae6159656044a8eecca56cf0b834b7c907063205" %}
-{% set number = 0 %}
+{% set number = 1 %}
 
 {% set target_name = "x86_64-linux" %}  # [linux64]
 {% set target_name = "ppc64le-linux" %}  # [ppc64le]
 {% set target_name = "sbsa-linux" %}  # [aarch64]
 {% set target_name = "x64" %}  # [win]
 
-{% if cuda_compiler_version in (None, "None", True, False) %}
-  {% set cuda_major = 0 %}
-{% else %}
-  {% set cuda_major = environ.get("cuda_compiler_version", "12.4").split(".")[0] | int %}
-{% endif %}
+{% set cuda_major = environ.get("cuda_compiler_version", "0").split(".")[0] | int %}
 
 # {{ PYTHON }} is not resolved properly in multi-output recipes...
 {% set PYTHON = "python" %}
@@ -57,6 +53,8 @@ outputs:
         - libcusparse
         # see discussions/references in conda-forge/cupy-feedstock#247
         - {{ pin_compatible("cuda-version", min_pin="x") }}
+        # unbounded: __cuda gates GPU presence; cuda-version handles the version
+        - __cuda
     test:
       script: run_test.py
       source_files:
@@ -167,7 +165,8 @@ outputs:
         - {{ pin_compatible('libcusparse', min_pin='x', max_pin='x') }}
         - scipy >=1.10,<1.17
         - optuna >=2.0
-        - __cuda >={{ cuda_major }}.0
+        # unbounded: __cuda gates GPU presence; cuda-version handles the version
+        - __cuda
         - {{ pin_subpackage('cupy', max_pin='x.x') }}
         - {{ pin_compatible('nccl') }}                           # [linux]
         - {{ pin_compatible('cutensor') }}
