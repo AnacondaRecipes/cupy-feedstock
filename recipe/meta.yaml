@@ -134,7 +134,7 @@ outputs:
         - numpy {{ numpy }}
         - cuda-version {{ cuda_compiler_version }}
         # can't find libcufilt
-        - cuda-nvcc {{ cuda_compiler_version }}
+        - cuda-cuxxfilt
         # can't find cusparseLt.h
         - cusparselt-dev
         - cuda-driver-dev  # [linux]
