@@ -114,6 +114,7 @@ outputs:
         - libcusolver-dev
         - libcusparse-dev
         - cuda-nvcc-dev
+        - libcusparselt-dev
       ignore_run_exports:
         # optional dependencies
         - nccl        # [linux]
@@ -134,6 +135,8 @@ outputs:
         - cuda-version {{ cuda_compiler_version }}
         # can't find libcufilt
         - cuda-nvcc {{ cuda_compiler_version }}
+        # can't find cusparseLt.h
+        - cusparselt-dev
         - cuda-driver-dev  # [linux]
         - cuda-cudart-dev
         - cuda-cudart-static
