@@ -1,0 +1,13 @@
+# We don`t have cusparselt for cuda 12.9, so it is disabled:
+# https://github.com/AnacondaRecipes/cusparselt-feedstock/blob/main/recipe/conda_build_config.yaml#L4
+
+gpu_variant:
+  - cuda-13
+
+cuda_compiler_version:
+  - 13
+
+zip_keys:
+  -
+    - gpu_variant
+    - cuda_compiler_version

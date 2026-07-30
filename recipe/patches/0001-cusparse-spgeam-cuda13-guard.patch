@@ -1,0 +1,44 @@
+--- a/cupy_backends/cuda/libs/cusparse.pxd	2026-05-30 14:11:46.000000000 +0000
++++ b/cupy_backends/cuda/libs/cusparse.pxd	2026-07-30 10:22:44.404692265 +0000
+@@ -70,19 +70,28 @@
+     ctypedef int Csr2CscAlg 'cusparseCsr2CscAlg_t'
+ 
+ # TODO(eriknw): cuSPARSE--remove stubs when SpGEAM ships in a public release.
+-# The #ifndef guard auto-deactivates when the real header defines these.
+-cdef extern from *:
+-    """
+-    #ifndef CUSPARSE_SPGEAM_ALG_DEFAULT
+-    /* SpGEAM not in this cuSPARSE; provide opaque forward decls. */
+-    typedef void* cusparseSpGEAMDescr_t;
+-    typedef int cusparseSpGEAMAlg_t;
+-    #define CUSPARSE_SPGEAM_ALG_DEFAULT 0
+-    #define CUSPARSE_SPGEAM_ALG1 1
+-    #endif
+-    """
+-    ctypedef void* SpGEAMDescr 'cusparseSpGEAMDescr_t'
+-    ctypedef int SpGEAMAlg 'cusparseSpGEAMAlg_t'
++# NOTE: gated on CUPY_CUDA_VERSION (a Cython compile-time constant), not on a
++# C preprocessor #ifndef, because (a) this block is emitted by Cython before
++# cusparse.h is #included in the generated source, so any macro-presence
++# check here always sees an undefined macro regardless of CUDA version, and
++# (b) starting with CUDA 13's cusparse.h, CUSPARSE_SPGEAM_ALG_DEFAULT is an
++# enum value, not a #define, so #ifndef could never detect it anyway.
++IF CUPY_CUDA_VERSION < 13000:
++    cdef extern from *:
++        """
++        /* SpGEAM not in this cuSPARSE; provide opaque forward decls. */
++        typedef void* cusparseSpGEAMDescr_t;
++        typedef int cusparseSpGEAMAlg_t;
++        #define CUSPARSE_SPGEAM_ALG_DEFAULT 0
++        #define CUSPARSE_SPGEAM_ALG1 1
++        """
++        ctypedef void* SpGEAMDescr 'cusparseSpGEAMDescr_t'
++        ctypedef int SpGEAMAlg 'cusparseSpGEAMAlg_t'
++ELSE:
++    # cusparse.h (CUDA 13+) declares these natively; just alias them.
++    cdef extern from *:
++        ctypedef void* SpGEAMDescr 'cusparseSpGEAMDescr_t'
++        ctypedef int SpGEAMAlg 'cusparseSpGEAMAlg_t'
+ 
+ cpdef enum:
+     CUSPARSE_POINTER_MODE_HOST = 0
