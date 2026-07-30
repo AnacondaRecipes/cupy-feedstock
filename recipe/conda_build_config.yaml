@@ -1,0 +1,10 @@
+gpu_variant:
+  - cuda-13
+
+cuda_compiler_version:
+  - 13
+
+zip_keys:
+  -
+    - gpu_variant
+    - cuda_compiler_version
