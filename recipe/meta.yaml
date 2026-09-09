@@ -1,14 +1,17 @@
 {% set name = "cupy" %}
 {% set version = "14.2.0" %}
+
 {% set target_name = "x86_64-linux" %}  # [linux64]
 {% set target_name = "sbsa-linux" %}  # [aarch64]
 {% set target_name = "x64" %}  # [win]
+
 {% set cuda_major = environ.get("cuda_compiler_version", "0").split(".")[0] | int %}
-{% set PYTHON = "python" %}
-{% set PYTHON = "$PREFIX/bin/python" %}  # [linux]
-{% set PYTHON = "%PREFIX%\python" %}  # [win]
 
 # {{ PYTHON }} is not resolved properly in multi-output recipes...
+{% set PYTHON = "python" %}
+{% set PYTHON = "$PREFIX/bin/python" %}  # [linux]
+{% set PYTHON = "%PREFIX%\\python" %}  # [win]
+
 package:
   name: {{ name }}-split
   version: {{ version }}
@@ -35,6 +38,7 @@ requirements:
 
 outputs:
   - name: cupy
+    version: {{ version }}
     requirements:
       host:
         - python
@@ -59,9 +63,6 @@ outputs:
         - tests
       commands:
         - pip check
-        - pip check
-        - pip check
-        - pip check
       requires:
         - pip
     about:
@@ -76,7 +77,7 @@ outputs:
         It provides GPU versions of many NumPy and SciPy functions.
       dev_url: https://github.com/cupy/cupy
       doc_url: https://docs.cupy.dev
-    version: {{ version }}
+
   - name: cupy-core
     version: {{ version }}
     build:
@@ -86,30 +87,30 @@ outputs:
       script:
         # CuPy default detects CUDA from nvcc, but on Conda-Forge's dockers nvcc lives in a different place...
         # With conda-forge/nvcc-feedstock#58, CUDA_PATH is set correctly
-        - export NVCC="$(which nvcc)"  # [linux]
-        - export CUDA_PATH=$PREFIX/targets/{{ target_name }}  # [linux]
-        - echo "nvcc is $NVCC, CUDA path is $CUDA_PATH"  # [linux]
-        - echo "CONDA_OVERRIDE_CUDA is $CONDA_OVERRIDE_CUDA"  # [linux]
+        - export NVCC="$(which nvcc)"                                                # [linux]
+        - export CUDA_PATH=$PREFIX/targets/{{ target_name }}                         # [linux]
+        - echo "nvcc is $NVCC, CUDA path is $CUDA_PATH"                              # [linux]
+        - echo "CONDA_OVERRIDE_CUDA is $CONDA_OVERRIDE_CUDA"                         # [linux]
         # Set NVCC to conda build env's nvcc (compiler('cuda') installs to BUILD_PREFIX, not PREFIX).
         # Double-backslashes needed because CuPy's Python build system interprets the string.
         - set "dummy=%BUILD_PREFIX%\Library\bin\nvcc.exe" && call set "NVCC=%%dummy:\=\\%%"  # [win64]
-        - set "NVCC=%NVCC% --use-local-env"  # [win64]
-        - set "CUDA_PATH=%PREFIX%\Library"  # [win64]
-        - echo "nvcc is %NVCC%, CUDA path is %CUDA_PATH%"  # [win64]
-        - echo "CONDA_OVERRIDE_CUDA is %CONDA_OVERRIDE_CUDA%"  # [win64]
+        - set "NVCC=%NVCC% --use-local-env"                                          # [win64]
+        - set "CUDA_PATH=%PREFIX%\Library"                                           # [win64]
+        - echo "nvcc is %NVCC%, CUDA path is %CUDA_PATH%"                            # [win64]
+        - echo "CONDA_OVERRIDE_CUDA is %CONDA_OVERRIDE_CUDA%"                        # [win64]
         - >-
           {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
         - if errorlevel 1 exit 1  # [win]
         # enable CuPy's preload mechanism
-        - mkdir -p "${SP_DIR}/cupy/.data/"  # [linux]
+        - mkdir -p "${SP_DIR}/cupy/.data/"                                                                          # [linux]
         - cp ${RECIPE_DIR}/preload_config/linux64_cuda{{ cuda_major }}_wheel.json ${SP_DIR}/cupy/.data/_wheel.json  # [linux]
-        - if not exist %SP_DIR%\cupy\.data mkdir %SP_DIR%\cupy\.data  # [win]
-        - copy %RECIPE_DIR%\preload_config\win64_cuda{{ cuda_major }}_wheel.json %SP_DIR%\cupy\.data\_wheel.json  # [win]
+        - if not exist %SP_DIR%\cupy\.data mkdir %SP_DIR%\cupy\.data                                                # [win]
+        - copy %RECIPE_DIR%\preload_config\win64_cuda{{ cuda_major }}_wheel.json %SP_DIR%\cupy\.data\_wheel.json    # [win]
         # cupy/cupy#7578
         - if not exist %SP_DIR%\cupy\.data\_depends.json exit 1  # [win]
       missing_dso_whitelist:
-        - "*/libcuda.*"  # [linux]
-        - "*/nvcuda.dll"  # [win]
+        - '*/libcuda.*'  # [linux]
+        - '*/nvcuda.dll'  # [win]
       ignore_run_exports_from:
         - {{ compiler('cuda') }}
         - cuda-driver-dev  # [linux]
@@ -127,7 +128,7 @@ outputs:
         - libcusparselt-dev
       ignore_run_exports:
         # optional dependencies
-        - nccl  # [linux]
+        - nccl        # [linux]
         - cutensor
     requirements:
       build:
@@ -173,12 +174,12 @@ outputs:
         - {{ pin_compatible('libcurand', min_pin='x', max_pin='x') }}
         - {{ pin_compatible('libcusolver', min_pin='x', max_pin='x') }}
         - {{ pin_compatible('libcusparse', min_pin='x', max_pin='x') }}
-        - scipy >=1.14,<1.17
+        - scipy >=1.14,<1.18
         - optuna >=2.0
         # unbounded: __cuda gates GPU presence; cuda-version handles the version
         - __cuda
         - {{ pin_subpackage('cupy', max_pin='x.x') }}
-        - {{ pin_compatible('nccl') }}  # [linux]
+        - {{ pin_compatible('nccl') }}                           # [linux]
         - {{ pin_compatible('cutensor') }}
     test:
       requires:
@@ -218,3 +219,4 @@ extra:
     - asi1024
     - emcastillo
     - toslunar
+
