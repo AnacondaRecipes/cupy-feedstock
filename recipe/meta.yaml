@@ -19,14 +19,6 @@ package:
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: cfed725e612178cfbdbf62f4a3a598b60edecbbca718c0d4580c21a16ae4a62c
-  patches:
-    # Fixes a compile-time redefinition conflict where cupy's own SpGEAM stub
-    # typedefs collide with CUDA 13's cusparse.h, which now declares these
-    # natively as a real enum/struct instead of leaving them undefined; the fix
-    # gates the stub behind a Cython-level CUPY_CUDA_VERSION check (rather than
-    # the original #ifndef, which failed to detect this both due to include
-    # ordering and because the CUDA 13 symbol is an enum value, not a macro).
-    - patches/0001-cusparse-spgeam-cuda13-guard.patch
 
 build:
   number: 0
