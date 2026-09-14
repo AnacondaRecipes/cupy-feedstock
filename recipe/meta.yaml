@@ -1,5 +1,5 @@
 {% set name = "cupy" %}
-{% set version = "14.1.1" %}
+{% set version = "14.2.0" %}
 
 {% set target_name = "x86_64-linux" %}  # [linux64]
 {% set target_name = "sbsa-linux" %}  # [aarch64]
@@ -18,15 +18,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 3d4d193a5b028e1823d1d44fe6268364d8fb76c3793ad4e28e1427c56ceb2f80
-  patches:
-    # Fixes a compile-time redefinition conflict where cupy's own SpGEAM stub
-    # typedefs collide with CUDA 13's cusparse.h, which now declares these
-    # natively as a real enum/struct instead of leaving them undefined; the fix
-    # gates the stub behind a Cython-level CUPY_CUDA_VERSION check (rather than
-    # the original #ifndef, which failed to detect this both due to include
-    # ordering and because the CUDA 13 symbol is an enum value, not a macro).
-    - patches/0001-cusparse-spgeam-cuda13-guard.patch
+  sha256: cfed725e612178cfbdbf62f4a3a598b60edecbbca718c0d4580c21a16ae4a62c
 
 build:
   number: 0
@@ -61,6 +53,10 @@ outputs:
       script: run_test.py
       source_files:
         - tests
+      commands:
+        - pip check
+      requires:
+        - pip
     about:
       home: https://cupy.dev
       license: MIT
@@ -170,7 +166,7 @@ outputs:
         - {{ pin_compatible('libcurand', min_pin='x', max_pin='x') }}
         - {{ pin_compatible('libcusolver', min_pin='x', max_pin='x') }}
         - {{ pin_compatible('libcusparse', min_pin='x', max_pin='x') }}
-        - scipy >=1.14,<1.17
+        - scipy >=1.14,<1.18
         - optuna >=2.0
         # unbounded: __cuda gates GPU presence; cuda-version handles the version
         - __cuda
